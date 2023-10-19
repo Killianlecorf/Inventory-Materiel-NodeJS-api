@@ -15,8 +15,14 @@ export const createMaterial = async (req: Request, res: Response) => {
 // Obtenir tous les matériaux
 export const getMaterials = async (req: Request, res: Response) => {
   try {
-    const materials = await Material.find();
-    res.status(200).json(materials);
+    const { status } = req.query;
+
+    if (status === '200') {
+      const materials = await Material.find();
+      res.status(200).json(materials);
+    } else {
+      res.status(400).json({ error: 'Requête incorrecte' });
+    }
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération des matériaux' });
   }
