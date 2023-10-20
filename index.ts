@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import databaseConnection from "./src/Config/DBconnect";
 import materialsRoute from "./src/Routes/Materials.routes"
 import { corsMiddleware } from "./src/middleware/cors.middleware";
+import EmailRoute from './src/Routes/Mail.routes'
 
 dotenv.config()
 
@@ -24,8 +25,11 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/api/materials', materialsRoute);
+app.use('/api/service', EmailRoute);
 
 databaseConnection()
+
+
 
 app.listen(port, () => {
   console.log(`Le serveur est en écoute sur le port ${port}`);

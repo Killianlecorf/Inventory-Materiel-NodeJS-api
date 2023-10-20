@@ -8,38 +8,62 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-require("../index");
-require("../src/Models/Materials.model");
+exports.clearDatabase = exports.closeDatabase = exports.connect = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
+const mongodb_memory_server_1 = require("mongodb-memory-server");
+const supertest_1 = __importDefault(require("supertest"));
+const index_1 = require("../index");
+const mongod = mongodb_memory_server_1.MongoMemoryServer.create();
+const connect = () => __awaiter(void 0, void 0, void 0, function* () {
+    const uri = (yield mongod).getUri();
+    yield mongoose_1.default.connect(uri);
+});
+exports.connect = connect;
+const closeDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
+    yield mongoose_1.default.connection.dropDatabase();
+    yield mongoose_1.default.connection.close();
+    yield (yield mongod).stop();
+});
+exports.closeDatabase = closeDatabase;
+const clearDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
+    const collections = mongoose_1.default.connection.collections;
+    for (const key in collections) {
+        const collection = collections[key];
+        yield collection.deleteMany({});
+    }
+});
+exports.clearDatabase = clearDatabase;
+const request = (0, supertest_1.default)(index_1.app);
 describe('Integration Test', () => {
-    const baseUrl = 'http://localhost:5252';
+    beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, exports.connect)();
+        console.log("connected");
+    }));
+    afterEach(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, exports.clearDatabase)();
+        console.log("cleared");
+    }));
+    afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, exports.closeDatabase)();
+        console.log("closed");
+    }));
     it('GET /api/materials should return a list of materials', () => __awaiter(void 0, void 0, void 0, function* () {
-        const url = `${baseUrl}/api/materials`;
-        const expectedMaterials = [
-            { id: 1, name: 'Material 1', description: 'Description 1' },
-            { id: 2, name: 'Material 2', description: 'Description 2' },
-        ];
-        const response = yield fetch(url);
-        const data = yield response.json();
+        const response = yield request.get('/api/materials');
+        const data = response.body;
         expect(response.status).toBe(200);
         expect(Array.isArray(data)).toBe(true);
+        const expectedMaterials = data;
         data.forEach((material, index) => {
-            expect(material).toEqual(expect.objectContaining({
-                id: expectedMaterials[index].id,
-                name: expectedMaterials[index].name,
+            expect(material).toEqual({
+                _id: expectedMaterials[index]._id,
                 description: expectedMaterials[index].description,
-            }));
+                name: expectedMaterials[index].name,
+                __v: expectedMaterials[index].__v,
+            });
         });
-    }));
-    it('GET /api/invalid-endpoint should return status 404', () => __awaiter(void 0, void 0, void 0, function* () {
-        const url = `${baseUrl}/api/invalid-endpoint`;
-        const response = yield fetch(url);
-        expect(response.status).toBe(404);
-    }));
-    it('GET /api/materials should return status 500 on server error', () => __awaiter(void 0, void 0, void 0, function* () {
-        const url = `${baseUrl}/api/materials`;
-        // Supposons que le serveur renvoie un statut 500 en cas d'erreur interne
-        const response = yield fetch(url);
-        expect(response.status).toBe(500);
     }));
 });

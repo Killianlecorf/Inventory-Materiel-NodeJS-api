@@ -8,6 +8,8 @@ function isString(value) {
     return typeof value === 'string';
 }
 const databaseConnection = () => {
+    if (process.env.NODE_ENV)
+        return;
     const uri = process.env.DBNAME;
     try {
         if (isString(uri)) {
