@@ -29,10 +29,10 @@ app.use('/api/service', EmailRoute);
 
 databaseConnection()
 
-
-
-app.listen(port, () => {
-  console.log(`Le serveur est en écoute sur le port ${port}`);
-});
+if (process.env.NODE_ENV?.trim() !== 'test') {
+  app.listen(port, () => {
+    console.log(`Le serveur est en écoute sur le port ${port}`);
+  }); 
+}
 
 export { app };

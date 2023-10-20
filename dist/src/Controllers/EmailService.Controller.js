@@ -16,7 +16,7 @@ const sendMail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { to, subject, text } = req.body;
     try {
         if (!to || !subject || !text) {
-            throw new Error('Les champs "Email", "Object" et "Corps du mail" sont obligatoires.');
+            throw new Error('Les champs "Email", "Objet" et "Corps du mail" sont obligatoires.');
         }
         if (!(0, ValidationEmail_1.isValidEmail)(to)) {
             throw new Error('L\'adresse e-mail du destinataire est invalide.');
