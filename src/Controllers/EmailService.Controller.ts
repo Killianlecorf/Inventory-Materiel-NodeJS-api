@@ -7,7 +7,7 @@ export const sendMail = async (req: Request, res: Response) => {
 
   try {
     if (!to || !subject || !text) {
-      throw new Error('Les champs "Email", "Object" et "Corps du mail" sont obligatoires.');
+      throw new Error('Les champs "Email", "Objet" et "Corps du mail" sont obligatoires.');
     }
 
     if (!isValidEmail(to)) {

@@ -29,34 +29,33 @@ const request = supertest(app);
 
 describe('Integration Test', () => {
   beforeAll(async () => {
-        await connect()
-        console.log("connected");
-    });
-    afterEach(async () => {
-        await clearDatabase()
-        console.log("cleared");
-    });
-    afterAll(async () => {
-        await closeDatabase()
-        console.log("closed");
-    });
+    await connect();
+  });
 
-  it('GET /api/materials should return a list of materials', async () => {
-    const response = await request.get('/api/materials');
-    const data = response.body;
+  afterEach(async () => {
+    await clearDatabase();
+  });
+
+  afterAll(async () => {
+    await closeDatabase();
+  });
+
+  it('GET /api/materials/:id should return a material with a specific ID', async () => {
+    const newMaterial = new Material({
+      name: 'Test Material',
+      description: 'This is a test material',
+    });
+    const savedMaterial = await newMaterial.save();
+
+    const response = await request.get(`/api/materials/${savedMaterial._id}`);
+    const material = response.body;
 
     expect(response.status).toBe(200);
-    expect(Array.isArray(data)).toBe(true);
-
-    const expectedMaterials = data;
-
-    data.forEach((material: any, index: number) => {
-      expect(material).toEqual({
-        _id: expectedMaterials[index]._id,
-        description: expectedMaterials[index].description,
-        name: expectedMaterials[index].name,
-        __v: expectedMaterials[index].__v,
-      });
+    expect(material).toEqual({
+      _id: savedMaterial._id.toString(),
+      name: savedMaterial.name,
+      description: savedMaterial.description,
+      __v: savedMaterial.__v,
     });
   });
 });
