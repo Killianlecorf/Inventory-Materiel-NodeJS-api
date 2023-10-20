@@ -5,6 +5,8 @@ function isString(value: any): value is string {
 }
 
 const databaseConnection = () => {
+
+    if (process.env.NODE_ENV) return
     const uri = process.env.DBNAME ; 
 
     try {
