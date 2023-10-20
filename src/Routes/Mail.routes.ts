@@ -6,6 +6,6 @@ import {
 
  const router = express.Router();
 
-app.post('/send-email', router.post('/send-email', sendMail));
+router.post('/send-email', sendMail);
 
 export default router;
