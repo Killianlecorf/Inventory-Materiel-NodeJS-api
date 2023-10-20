@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
     "build": "tsc",
-    "test": "jest"
+    "test": "set NODE_ENV=test && jest"
   },
   "author": "",
   "license": "ISC",

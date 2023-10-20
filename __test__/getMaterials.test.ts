@@ -1,40 +1,44 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-const supertest = require("supertest")
-import { app } from "../index";
+import supertest from 'supertest';
+import { app } from '../index';
 
 const mongod = MongoMemoryServer.create();
+
 export const connect = async () => {
-   const uri = (await mongod).getUri();
-   await mongoose.connect(uri);
-}
+  const uri = (await mongod).getUri();
+  await mongoose.connect(uri);
+};
+
 export const closeDatabase = async () => {
-   await mongoose.connection.dropDatabase();
-   await mongoose.connection.close();
-   await (await mongod).stop();
-}
+  await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
+  await (await mongod).stop();
+};
+
 export const clearDatabase = async () => {
-   const collections = mongoose.connection.collections;
-   for (const key in collections) {
-      const collection = collections[key];
-      await collection.deleteMany({});
-   }
-}
-
-describe('Integration Test', () => {
-
-  beforeAll(async () => {
-    await connect()
-    console.log("connected");
-});
-afterEach(async () => {
-    await clearDatabase()
-    await closeDatabase()
-    console.log("cleared");
-});
-
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    const collection = collections[key];
+    await collection.deleteMany({});
+  }
+};
 
 const request = supertest(app);
+
+describe('Integration Test', () => {
+  beforeAll(async () => {
+        await connect()
+        console.log("connected");
+    });
+    afterEach(async () => {
+        await clearDatabase()
+        console.log("cleared");
+    });
+    afterAll(async () => {
+        await closeDatabase()
+        console.log("closed");
+    });
 
   it('GET /api/materials should return a list of materials', async () => {
     const response = await request.get('/api/materials');
