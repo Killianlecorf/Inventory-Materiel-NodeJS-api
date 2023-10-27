@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 import supertest from 'supertest';
-import { app } from '../index';
-import Material from "../src/Models/Materials.model";
-import "./setupBDD";
+import { app } from '../../index';
+import Material from "../../src/Models/Materials.model";
+import "../setupBDD";
 import { 
   connect,
   clearDatabase,
   closeDatabase
- } from "../__test__/setupBDD";
+ } from "../setupBDD";
 
 const request = supertest(app);
 
