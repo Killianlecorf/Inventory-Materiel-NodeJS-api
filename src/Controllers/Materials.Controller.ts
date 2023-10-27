@@ -6,7 +6,8 @@ export const createMaterial = async (req: Request, res: Response) => {
   try {
     const newMaterial: IMaterials = new Material(req.body);
     const savedMaterial = await newMaterial.save();
-    res.status(201).json(savedMaterial);
+    // Renvoie un objet JSON avec la propriété "material" en cas de succès
+    res.status(201).json({ material: savedMaterial });
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la création du matériau' });
   }

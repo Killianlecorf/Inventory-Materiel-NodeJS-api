@@ -1,12 +1,12 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import supertest from 'supertest';
-import { app } from '../index';
-import "./setupBDD";
+import { app } from '../../index';
+import "../setupBDD";
 import { 
   connect,
   clearDatabase,
   closeDatabase
- } from "../__test__/setupBDD";
+ } from "../setupBDD";
 
 const mongod = MongoMemoryServer.create();
 

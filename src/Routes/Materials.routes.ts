@@ -11,10 +11,10 @@ import {
 const router = express.Router();
 
 
-router.post('/create',corsMiddleware, createMaterial);
+router.post('/',corsMiddleware, createMaterial);
 router.get('/',corsMiddleware, getMaterials);
 router.get('/:materialId',corsMiddleware, getMaterialById);
-router.delete('/materialId',corsMiddleware, deleteMaterial)
-router.put('/materialId',corsMiddleware, updateMaterial)
+router.delete('/:materialId',corsMiddleware, deleteMaterial)
+router.put('/:materialId',corsMiddleware, updateMaterial)
 
 export default router;
