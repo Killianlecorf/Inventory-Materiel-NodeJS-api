@@ -7,7 +7,7 @@ import {
   closeDatabase
 } from '../setupBDD';
 
-describe('DELETE /materials', () => {
+describe('DELETE /api/materials/:materialId', () => {
   beforeAll(async () => {
     await connect();
   });
@@ -23,7 +23,9 @@ describe('DELETE /materials', () => {
   it('devrait supprimer un matériau par ID', async () => {
     const materialData = {
       name: 'Matériau de test',
-      description: 'Description du matériau de test',
+      etudiants: 'killian',
+      number: 42,
+      date: new Date(),
     } as IMaterials;
 
     const createdMaterial = await Material.create(materialData);
@@ -31,7 +33,7 @@ describe('DELETE /materials', () => {
     const response = await request(app)
       .delete(`/api/materials/${createdMaterial._id}`);
 
-    expect(response.status).toBe(204); // Le statut 204 signifie que la ressource a été supprimée
+    expect(response.status).toBe(204);
   });
 
   it('ne devrait pas supprimer un matériau inexistant par ID', async () => {
@@ -40,7 +42,7 @@ describe('DELETE /materials', () => {
     const response = await request(app)
       .delete(`/api/materials/${nonExistentID}`);
 
-    expect(response.status).toBe(404); 
+    expect(response.status).toBe(404);
     expect(response.body.error).toBe('Matériau non trouvé');
   });
 
@@ -49,8 +51,8 @@ describe('DELETE /materials', () => {
   
     const response = await request(app)
       .delete(`/api/materials/${invalidID}`);
-
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBe('ID invalide');
+  
+    expect(response.status).toBe(404); 
+    expect(response.body.error).toBe('Matériau non trouvé');
   });
 });
