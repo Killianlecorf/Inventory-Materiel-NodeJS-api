@@ -2,6 +2,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
@@ -28,6 +29,8 @@ app.use((0, cors_1.default)());
 app.use('/api/materials', Materials_routes_1.default);
 app.use('/api/service', Mail_routes_1.default);
 (0, DBconnect_1.default)();
-app.listen(port, () => {
-    console.log(`Le serveur est en écoute sur le port ${port}`);
-});
+if (((_a = process.env.NODE_ENV) === null || _a === void 0 ? void 0 : _a.trim()) !== 'test') {
+    app.listen(port, () => {
+        console.log(`Le serveur est en écoute sur le port ${port}`);
+    });
+}

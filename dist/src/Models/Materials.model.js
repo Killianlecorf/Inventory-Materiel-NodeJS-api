@@ -29,9 +29,17 @@ const materialsSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
-    description: {
+    etudiants: {
         type: String,
         required: true,
+    },
+    number: {
+        type: Number,
+        required: true,
+    },
+    date: {
+        type: Date,
+        required: true
     }
 });
 const Material = mongoose_1.default.model('Materials', materialsSchema);

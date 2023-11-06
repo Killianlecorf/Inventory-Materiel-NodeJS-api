@@ -4,7 +4,8 @@ import Materials from '../Models/Materials.model';
 // Contrôleur pour la création d'un nouveau matériau
 export const createMaterial = async (req: Request, res: Response) => {
   try {
-    const { name, etudiants, number, date } = req.body;
+    const { name, etudiants, number } = req.body;
+    const date = new Date();
     const material = new Materials({ name, etudiants, number, date });
     await material.save();
     res.status(201).json(material);
@@ -12,7 +13,6 @@ export const createMaterial = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erreur lors de la création du matériau' });
   }
 };
-
 // Contrôleur pour la récupération de tous les matériaux
 export const getMaterials = async (req: Request, res: Response) => {
   try {
@@ -23,9 +23,8 @@ export const getMaterials = async (req: Request, res: Response) => {
   }
 };
 
-// Contrôleur pour la récupération d'un matériau par ID
 export const getMaterialById = async (req: Request, res: Response) => {
-  const materialId = req.params.id;
+  const materialId = req.params.materialId;
   try {
     const material = await Materials.findById(materialId);
     if (!material) {
@@ -39,7 +38,7 @@ export const getMaterialById = async (req: Request, res: Response) => {
 
 // Contrôleur pour la mise à jour d'un matériau par ID
 export const updateMaterial = async (req: Request, res: Response) => {
-  const materialId = req.params.id;
+  const materialId = req.params.materialId;
   try {
     const updatedMaterial = await Materials.findByIdAndUpdate(materialId, req.body, { new: true });
     if (!updatedMaterial) {
@@ -53,7 +52,7 @@ export const updateMaterial = async (req: Request, res: Response) => {
 
 // Contrôleur pour la suppression d'un matériau par ID
 export const deleteMaterial = async (req: Request, res: Response) => {
-  const materialId = req.params.id;
+  const materialId = req.params.materialId;
   try {
     const deletedMaterial = await Materials.findByIdAndRemove(materialId);
     if (!deletedMaterial) {

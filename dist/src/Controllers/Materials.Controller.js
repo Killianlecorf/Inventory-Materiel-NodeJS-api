@@ -13,20 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteMaterial = exports.updateMaterial = exports.getMaterialById = exports.getMaterials = exports.createMaterial = void 0;
-const Materials_model_1 = __importDefault(require("../Models/Materials.model")); // Assurez-vous que le chemin du modèle est correct
-// Créer un nouveau matériau
+const Materials_model_1 = __importDefault(require("../Models/Materials.model"));
+// Contrôleur pour la création d'un nouveau matériau
 const createMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newMaterial = new Materials_model_1.default(req.body);
-        const savedMaterial = yield newMaterial.save();
-        res.status(201).json(savedMaterial);
+        const { name, etudiants, number } = req.body;
+        const date = new Date();
+        const material = new Materials_model_1.default({ name, etudiants, number, date });
+        yield material.save();
+        res.status(201).json(material);
     }
     catch (error) {
         res.status(500).json({ error: 'Erreur lors de la création du matériau' });
     }
 });
 exports.createMaterial = createMaterial;
-// Obtenir tous les matériaux
+// Contrôleur pour la récupération de tous les matériaux
 const getMaterials = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const materials = yield Materials_model_1.default.find();
@@ -37,9 +39,8 @@ const getMaterials = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getMaterials = getMaterials;
-// Obtenir un matériau par son ID
 const getMaterialById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { materialId } = req.params;
+    const materialId = req.params.materialId;
     try {
         const material = yield Materials_model_1.default.findById(materialId);
         if (!material) {
@@ -52,9 +53,9 @@ const getMaterialById = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getMaterialById = getMaterialById;
-// Mettre à jour un matériau par son ID
+// Contrôleur pour la mise à jour d'un matériau par ID
 const updateMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { materialId } = req.params;
+    const materialId = req.params.materialId;
     try {
         const updatedMaterial = yield Materials_model_1.default.findByIdAndUpdate(materialId, req.body, { new: true });
         if (!updatedMaterial) {
@@ -67,15 +68,15 @@ const updateMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.updateMaterial = updateMaterial;
-// Supprimer un matériau par son ID
+// Contrôleur pour la suppression d'un matériau par ID
 const deleteMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { materialId } = req.params;
+    const materialId = req.params.materialId;
     try {
         const deletedMaterial = yield Materials_model_1.default.findByIdAndRemove(materialId);
         if (!deletedMaterial) {
             return res.status(404).json({ error: 'Matériau non trouvé' });
         }
-        res.status(204).send();
+        res.status(204).end();
     }
     catch (error) {
         res.status(500).json({ error: 'Erreur lors de la suppression du matériau' });
