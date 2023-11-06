@@ -2,7 +2,9 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IMaterials extends Document {
   name: string;
-  description: string;
+  etudiants: string;
+  number : number ;
+  date : Date;
 }
 
 const materialsSchema: Schema<IMaterials> = new Schema({
@@ -10,9 +12,17 @@ const materialsSchema: Schema<IMaterials> = new Schema({
     type: String,
     required: true,
   },
-  description: {
+  etudiants: {
     type: String,
     required: true,
+  },
+  number: {
+    type: Number,
+    required: true,
+  },
+  date: {
+    type : Date,
+    required: true
   }
 });
 

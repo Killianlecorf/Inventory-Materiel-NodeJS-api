@@ -1,6 +1,7 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
 import supertest from 'supertest';
 import { app } from '../../index';
+import Material, {IMaterials} from "../../src/Models/Materials.model";
 import "../setupBDD";
 import { 
   connect,
@@ -8,44 +9,48 @@ import {
   closeDatabase
  } from "../setupBDD";
 
-const mongod = MongoMemoryServer.create();
-
-
 const request = supertest(app);
 
 describe('Integration Test', () => {
 
   beforeAll(async () => {
-    await connect()
+    await connect();
     console.log("connected");
   });
 
   afterEach(async () => {
-      await clearDatabase()
-      console.log("cleared");
+    await clearDatabase();
+    console.log("cleared");
   });
 
   afterAll(async () => {
-      await closeDatabase()
-      console.log("closed");
+    await closeDatabase();
+    console.log("closed");
   });
 
-  it('GET /api/materials should return a list of materials', async () => {
-    const response = await request.get('/api/materials');
-    const data = response.body;
+  it('devrait récupérer tous les matériaux', async () => {
+    const materialData = {
+      name: 'Matériau de test',
+      etudiants: 'Description du matériau de test',
+      number: 42,
+      date: new Date(),
+    } as IMaterials;
+
+    await Material.create(materialData);
+
+    const response = await supertest(app)
+      .get('/api/materials');
 
     expect(response.status).toBe(200);
-    expect(Array.isArray(data)).toBe(true);
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.length).toBe(1);
+  });
 
-    const expectedMaterials = data;
+  it('GET /api/materials/:id should return 404 for non-existent ID', async () => {
+    const nonExistentId = new mongoose.Types.ObjectId();
 
-    data.forEach((material: any, index: number) => {
-      expect(material).toEqual({
-        _id: expectedMaterials[index]._id,
-        description: expectedMaterials[index].description,
-        name: expectedMaterials[index].name,
-        __v: expectedMaterials[index].__v,
-      });
-    });
+    const response = await request.get(`/api/materials/${nonExistentId}`);
+
+    expect(response.status).toBe(404);
   });
 });
