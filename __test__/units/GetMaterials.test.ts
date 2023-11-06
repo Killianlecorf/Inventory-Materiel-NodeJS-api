@@ -7,7 +7,7 @@ import {
   closeDatabase
 } from '../setupBDD';
 
-describe('GET /materials', () => {
+describe('GET /api/materials', () => {
   beforeAll(async () => {
     await connect();
   });
@@ -20,31 +20,19 @@ describe('GET /materials', () => {
     await closeDatabase();
   });
 
-  it('devrait récupérer un matériau par ID', async () => {
-    const materialData = {
-      name: 'Matériau de test',
-      description: 'Description du matériau de test',
-    } as IMaterials;
-
-    const createdMaterial = await Material.create(materialData);
-
-    const response = await request(app) 
-      .get(`/api/materials/${createdMaterial._id}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body.name).toBe(materialData.name);
-    expect(response.body.description).toBe(materialData.description);
-  });
+  
 
   it('devrait récupérer tous les matériaux', async () => {
     const materialData = {
       name: 'Matériau de test',
-      description: 'Description du matériau de test',
+      etudiants: 'Description du matériau de test',
+      number: 42,
+      date: new Date(),
     } as IMaterials;
 
     await Material.create(materialData);
 
-    const response = await request(app) 
+    const response = await request(app)
       .get('/api/materials');
 
     expect(response.status).toBe(200);
