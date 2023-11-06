@@ -23,7 +23,7 @@ describe('DELETE /api/materials/:materialId', () => {
   it('devrait supprimer un matériau par ID', async () => {
     const materialData = {
       name: 'Matériau de test',
-      etudiants: 'Description du matériau de test',
+      etudiants: 'killian',
       number: 42,
       date: new Date(),
     } as IMaterials;
@@ -55,5 +55,4 @@ describe('DELETE /api/materials/:materialId', () => {
     expect(response.status).toBe(404); 
     expect(response.body.error).toBe('Matériau non trouvé');
   });
-  
 });
