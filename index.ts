@@ -6,6 +6,7 @@ import databaseConnection from "./src/Config/DBconnect";
 import materialsRoute from "./src/Routes/Materials.routes"
 import { corsMiddleware } from "./src/middleware/cors.middleware";
 import EmailRoute from './src/Routes/Mail.routes'
+import LendMaterialsRoute from './src/Routes/LendMaterials.routes'
 
 dotenv.config()
 
@@ -26,6 +27,7 @@ app.use(cors());
 
 app.use('/api/materials', materialsRoute);
 app.use('/api/service', EmailRoute);
+app.use('/api/lend', LendMaterialsRoute);
 
 databaseConnection()
 
