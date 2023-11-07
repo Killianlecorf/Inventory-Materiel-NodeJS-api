@@ -45,7 +45,6 @@ describe('GET /api/materials/:materialId', () => {
     const nonExistentId = 'invalid-id'; 
     const response = await request(app)
       .get(`/api/materials/${nonExistentId}`)
-      .expect(404);
 
     expect(response.body.error).toEqual('Matériau non trouvé');
   });

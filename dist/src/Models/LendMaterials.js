@@ -24,23 +24,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const materialsSchema = new mongoose_1.Schema({
-    name: {
+const lendMaterialsSchema = new mongoose_1.Schema({
+    email: {
         type: String,
         required: true,
     },
-    etudiants: {
-        type: String,
-        required: true,
-    },
-    number: {
-        type: Number,
-        required: true,
+    material: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Materials',
     },
     date: {
         type: Date,
         required: true
     }
 });
-const Material = mongoose_1.default.model('Materials', materialsSchema);
-exports.default = Material;
+const LendMaterial = mongoose_1.default.model('LendMaterials', lendMaterialsSchema);
+exports.default = LendMaterial;
