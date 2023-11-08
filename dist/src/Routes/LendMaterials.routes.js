@@ -12,6 +12,6 @@ router.post('/:materialId', cors_middleware_1.corsMiddleware, LendMaterials_cont
 router.get('/', cors_middleware_1.corsMiddleware, LendMaterials_controller_1.getAllLendMaterials);
 router.get('/:id', cors_middleware_1.corsMiddleware, LendMaterials_controller_1.getLendMaterialById);
 router.get('/material/:materialId', cors_middleware_1.corsMiddleware, LendMaterials_controller_1.getLendMaterialsByMaterialId);
-router.put('/:id', cors_middleware_1.corsMiddleware, LendMaterials_controller_1.updateLendMaterial);
+router.put('/:materialId', cors_middleware_1.corsMiddleware, LendMaterials_controller_1.updateLendMaterial);
 router.delete('/:id', cors_middleware_1.corsMiddleware, LendMaterials_controller_1.deleteLendMaterial);
 exports.default = router;
