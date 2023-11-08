@@ -14,6 +14,8 @@ export const createMaterial = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erreur lors de la création du matériau' });
   }
 };
+
+
 // Contrôleur pour la récupération de tous les matériaux
 export const getMaterials = async (req: Request, res: Response) => {
   try {
