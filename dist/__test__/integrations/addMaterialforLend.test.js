@@ -14,52 +14,52 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const Materials_model_1 = __importDefault(require("../../src/Models/Materials.model"));
+const LendMaterials_1 = __importDefault(require("../../src/Models/LendMaterials"));
 const index_1 = require("../../index");
 const setupBDD_1 = require("../setupBDD");
+const request = (0, supertest_1.default)(index_1.app);
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, setupBDD_1.connect)();
-    console.log("connected");
+    console.log('connected');
 }));
 afterEach(() => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, setupBDD_1.clearDatabase)();
-    console.log("cleared");
+    console.log('cleared');
 }));
 afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, setupBDD_1.closeDatabase)();
-    console.log("closed");
+    console.log('closed');
 }));
-const mockRequest = () => ({
-    body: {
-        email: 'klecorf@normandiewebschool.fr',
-    },
-    params: {
-        materialId: '654b7b2dc0c89c8a35eb2444',
-    },
-});
-const mockResponse = {
-    status: jest.fn().mockReturnThis(),
-    json: jest.fn().mockReturnThis(),
-};
 describe('createLendMaterial', () => {
     it('devrait créer un prêt de matériel avec succès', () => __awaiter(void 0, void 0, void 0, function* () {
-        // Assurez-vous d'ajouter un enregistrement Material factice dans la base de données
         const material = new Materials_model_1.default({
-            _id: 'votreIdDeTest',
-            // Ajoutez d'autres champs nécessaires ici
+            name: 'écran',
+            etudiants: 'étudiant1',
+            number: 1,
+            date: new Date(),
         });
         yield material.save();
-        const response = yield (0, supertest_1.default)(index_1.app)
-            .post('/votre-endpoint-de-création')
+        const response = yield request
+            .post(`/lend/${material._id}`)
             .send({
             email: 'klecorf@normandiewebschool.fr',
-            materialId: '654b7b2dc0c89c8a35eb2444',
-        });
-        // Assurez-vous que le statut de réponse est 201 (Created)
-        expect(response.status).toBe(201);
-        // Assurez-vous que la réponse JSON contient les données du prêt de matériel créé
-        expect(response.body).toEqual(expect.objectContaining({
+        })
+            .expect(201);
+        const lendMaterial = response.body;
+        expect(lendMaterial).toHaveProperty('email', 'klecorf@normandiewebschool.fr');
+        expect(lendMaterial).toHaveProperty('material');
+        // Vérifiez que le prêt de matériel a été correctement enregistré dans la base de données
+        const savedLendMaterial = yield LendMaterials_1.default.findById(lendMaterial._id);
+        expect(savedLendMaterial).toBeTruthy();
+    }));
+    it('devrait renvoyer une erreur 404 si le matériel n\'existe pas', () => __awaiter(void 0, void 0, void 0, function* () {
+        const nonExistentMaterialId = 'non_existent_id'; // Utilisez un ID qui n'existe pas
+        const response = yield request
+            .post(`/lend/${nonExistentMaterialId}`)
+            .send({
             email: 'klecorf@normandiewebschool.fr',
-            material: 'votreIdDeTest',
-        }));
+        })
+            .expect(404);
+        expect(response.body).toHaveProperty('error', 'Matériel non trouvé');
     }));
 });

@@ -40,8 +40,7 @@ const createLendMaterial = (req, res) => __awaiter(void 0, void 0, void 0, funct
 exports.createLendMaterial = createLendMaterial;
 const getLendMaterialsByMaterialId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const materialId = req.params.materialId; // Récupérez l'ID du matériel depuis les paramètres de l'URL
-        // Utilisez la méthode find de Mongoose pour récupérer tous les prêts de matériel avec le même ID de matériel
+        const materialId = req.params.materialId;
         const lendMaterials = yield LendMaterials_1.default.find({ material: materialId });
         if (lendMaterials.length === 0) {
             return res.status(404).json({ error: 'Aucun prêt de matériel trouvé pour cet ID de matériel.' });
@@ -57,7 +56,7 @@ exports.getLendMaterialsByMaterialId = getLendMaterialsByMaterialId;
 const getAllLendMaterials = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const lendMaterials = yield LendMaterials_1.default.find();
-        res.json(lendMaterials);
+        res.status(200).json(lendMaterials);
     }
     catch (error) {
         res.status(500).json({ error: 'Impossible de récupérer les prêts de matériel' });
@@ -71,7 +70,7 @@ const getLendMaterialById = (req, res) => __awaiter(void 0, void 0, void 0, func
         if (!lendMaterial) {
             return res.status(404).json({ error: 'Prêt de matériel non trouvé' });
         }
-        res.json(lendMaterial);
+        res.status(200).json(lendMaterial);
     }
     catch (error) {
         res.status(500).json({ error: 'Impossible de récupérer le prêt de matériel' });
@@ -85,7 +84,7 @@ const updateLendMaterial = (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (!lendMaterial) {
             return res.status(404).json({ error: 'Prêt de matériel non trouvé' });
         }
-        res.json(lendMaterial);
+        res.status(200).json(lendMaterial);
     }
     catch (error) {
         res.status(500).json({ error: 'Impossible de mettre à jour le prêt de matériel' });
@@ -99,7 +98,7 @@ const deleteLendMaterial = (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (!lendMaterial) {
             return res.status(404).json({ error: 'Prêt de matériel non trouvé' });
         }
-        res.json({ message: 'Prêt de matériel supprimé avec succès' });
+        res.status(204).end();
     }
     catch (error) {
         res.status(500).json({ error: 'Impossible de supprimer le prêt de matériel' });
