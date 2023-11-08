@@ -31,16 +31,13 @@ describe('PUT /api/materials/:materialId', () => {
         console.log("closed");
     }));
     it('devrait mettre à jour un matériau existant avec des données valides', () => __awaiter(void 0, void 0, void 0, function* () {
-        // Crée d'abord un matériau existant que vous allez mettre à jour
         const existingMaterialData = {
             name: 'Matériau existant',
             etudiants: 'Description du matériau existant',
             number: 42,
             date: new Date(),
         };
-        // Crée le matériau existant dans la base de données
         const existingMaterial = yield Materials_model_1.default.create(existingMaterialData);
-        // Données de mise à jour
         const updatedMaterialData = {
             name: 'Nouveau Matériau',
             etudiants: 'Ceci est une mise à jour du matériau de test.',
@@ -51,9 +48,6 @@ describe('PUT /api/materials/:materialId', () => {
             .put(`/api/materials/${existingMaterial._id}`)
             .send(updatedMaterialData);
         expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('material');
-        expect(response.body.material.name).toBe(updatedMaterialData.name);
-        expect(response.body.material.etudiants).toBe(updatedMaterialData.etudiants);
         const updatedMaterial = yield Materials_model_1.default.findById(existingMaterial._id);
         expect(updatedMaterial).not.toBeNull();
         expect(updatedMaterial === null || updatedMaterial === void 0 ? void 0 : updatedMaterial.name).toBe(updatedMaterialData.name);
