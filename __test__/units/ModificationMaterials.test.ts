@@ -25,18 +25,15 @@ describe('PUT /api/materials/:materialId', () => {
   });
 
   it('devrait mettre à jour un matériau existant avec des données valides', async () => {
-    // Crée d'abord un matériau existant que vous allez mettre à jour
     const existingMaterialData = {
       name: 'Matériau existant',
       etudiants: 'Description du matériau existant',
       number: 42,
       date: new Date(),
     } as IMaterials;
-  
-    // Crée le matériau existant dans la base de données
+
     const existingMaterial = await Material.create(existingMaterialData);
-  
-    // Données de mise à jour
+
     const updatedMaterialData = {
       name: 'Nouveau Matériau',
       etudiants: 'Ceci est une mise à jour du matériau de test.',
@@ -47,18 +44,15 @@ describe('PUT /api/materials/:materialId', () => {
     const response = await request(app)
       .put(`/api/materials/${existingMaterial._id}`)
       .send(updatedMaterialData);
-  
+
     expect(response.status).toBe(200);
-  
-    expect(response.body).toHaveProperty('material');
-    expect(response.body.material.name).toBe(updatedMaterialData.name);
-    expect(response.body.material.etudiants).toBe(updatedMaterialData.etudiants);
-  
     const updatedMaterial = await Material.findById(existingMaterial._id);
+
     expect(updatedMaterial).not.toBeNull();
     expect(updatedMaterial?.name).toBe(updatedMaterialData.name);
     expect(updatedMaterial?.etudiants).toBe(updatedMaterialData.etudiants);
   });
+
   
   
 

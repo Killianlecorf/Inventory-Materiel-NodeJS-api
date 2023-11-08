@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteMaterial = exports.updateMaterial = exports.getMaterialById = exports.getMaterials = exports.createMaterial = void 0;
 const Materials_model_1 = __importDefault(require("../Models/Materials.model"));
+const mongoose = require("mongoose");
 // Contrôleur pour la création d'un nouveau matériau
 const createMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -49,7 +50,7 @@ const getMaterialById = (req, res) => __awaiter(void 0, void 0, void 0, function
         res.status(200).json(material);
     }
     catch (error) {
-        res.status(500).json({ error: 'Erreur lors de la récupération du matériau' });
+        res.status(404).json({ error: 'Matériau non trouvé' }); // Modification ici
     }
 });
 exports.getMaterialById = getMaterialById;
@@ -61,7 +62,7 @@ const updateMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (!updatedMaterial) {
             return res.status(404).json({ error: 'Matériau non trouvé' });
         }
-        res.status(200).json(updatedMaterial);
+        res.status(200).json({ material: updatedMaterial });
     }
     catch (error) {
         res.status(500).json({ error: 'Erreur lors de la mise à jour du matériau' });
@@ -71,6 +72,9 @@ exports.updateMaterial = updateMaterial;
 // Contrôleur pour la suppression d'un matériau par ID
 const deleteMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const materialId = req.params.materialId;
+    if (!materialId || !mongoose.Types.ObjectId.isValid(materialId)) {
+        return res.status(404).json({ error: 'Matériau non trouvé' });
+    }
     try {
         const deletedMaterial = yield Materials_model_1.default.findByIdAndRemove(materialId);
         if (!deletedMaterial) {
