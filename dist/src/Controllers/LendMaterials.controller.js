@@ -21,6 +21,10 @@ const createLendMaterial = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const { email } = req.body;
         const date = new Date();
         const { materialId } = req.params;
+        // Vérifiez si l'ID du matériel est valide (par exemple, si sa longueur est de 24 caractères)
+        if (!isValidMaterialId(materialId)) {
+            return res.status(404).json({ error: 'ID de matériel non valide' });
+        }
         const material = yield Materials_model_1.default.findById(materialId);
         if (!material) {
             return res.status(404).json({ error: 'Matériel non trouvé' });
@@ -34,17 +38,28 @@ const createLendMaterial = (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(201).json(savedLendMaterial);
     }
     catch (error) {
+        // Gérez les erreurs internes du serveur ici
+        console.error(error);
         res.status(500).json({ error: 'Impossible de créer le prêt de matériel' });
     }
 });
 exports.createLendMaterial = createLendMaterial;
+function isValidMaterialId(id) {
+    return id.length === 24;
+}
 const getLendMaterialsByMaterialId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const materialId = req.params.materialId;
+        // Vérifie si l'ID du matériel est valide
+        if (!isValidMaterialId(materialId)) {
+            return res.status(404).json({ error: 'ID de matériel non valide' });
+        }
+        // Recherche les prêts de matériel pour l'ID de matériel donné
         const lendMaterials = yield LendMaterials_1.default.find({ material: materialId });
         if (lendMaterials.length === 0) {
             return res.status(404).json({ error: 'Aucun prêt de matériel trouvé pour cet ID de matériel.' });
         }
+        // Renvoie les prêts de matériel trouvés
         res.status(200).json(lendMaterials);
     }
     catch (error) {
@@ -63,10 +78,14 @@ const getAllLendMaterials = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getAllLendMaterials = getAllLendMaterials;
-// Controller pour récupérer un élément LendMaterials par ID
 const getLendMaterialById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const lendMaterial = yield LendMaterials_1.default.findById(req.params.id);
+        const lendMaterialId = req.params.id;
+        // Vérifie si l'ID du matériel est valide
+        if (!isValidMaterialId(lendMaterialId)) {
+            return res.status(404).json({ error: 'ID de matériel non valide' });
+        }
+        const lendMaterial = yield LendMaterials_1.default.findById(lendMaterialId);
         if (!lendMaterial) {
             return res.status(404).json({ error: 'Prêt de matériel non trouvé' });
         }
@@ -81,6 +100,9 @@ exports.getLendMaterialById = getLendMaterialById;
 const updateLendMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const lendMaterial = yield LendMaterials_1.default.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!isValidMaterialId(lendMaterial === null || lendMaterial === void 0 ? void 0 : lendMaterial._id)) {
+            return res.status(404).json({ error: 'ID de matériel non valide' });
+        }
         if (!lendMaterial) {
             return res.status(404).json({ error: 'Prêt de matériel non trouvé' });
         }
@@ -94,13 +116,20 @@ exports.updateLendMaterial = updateLendMaterial;
 // Controller pour supprimer un élément LendMaterials par ID
 const deleteLendMaterial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Validation de l'ID de matériel
+        if (!isValidMaterialId(req.params.id)) {
+            return res.status(404).json({ error: 'ID de matériel non valide' });
+        }
         const lendMaterial = yield LendMaterials_1.default.findByIdAndRemove(req.params.id);
         if (!lendMaterial) {
+            // Si le prêt de matériel n'est pas trouvé, renvoyer une erreur 404
             return res.status(404).json({ error: 'Prêt de matériel non trouvé' });
         }
+        // Le prêt de matériel a été trouvé et supprimé avec succès, renvoyer une réponse 204 (No Content)
         res.status(204).end();
     }
     catch (error) {
+        // En cas d'erreur, renvoyer une réponse 500 (Internal Server Error)
         res.status(500).json({ error: 'Impossible de supprimer le prêt de matériel' });
     }
 });
