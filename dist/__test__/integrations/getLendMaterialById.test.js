@@ -13,10 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
-const Materials_model_1 = __importDefault(require("../../src/Models/Materials.model"));
-const LendMaterials_1 = __importDefault(require("../../src/Models/LendMaterials"));
 const index_1 = require("../../index");
 const setupBDD_1 = require("../setupBDD");
+const LendMaterials_1 = __importDefault(require("../../src/Models/LendMaterials"));
+const mongoose_1 = __importDefault(require("mongoose"));
 const request = (0, supertest_1.default)(index_1.app);
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, setupBDD_1.connect)();
@@ -30,45 +30,41 @@ afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, setupBDD_1.closeDatabase)();
     console.log('closed');
 }));
-describe('createLendMaterial', () => {
-    it('devrait créer un prêt de matériel avec succès', () => __awaiter(void 0, void 0, void 0, function* () {
-        const material = new Materials_model_1.default({
-            name: 'écran',
-            etudiants: 'étudiant1',
-            number: 1,
+describe('getLendMaterialById', () => {
+    it('devrait récupérer un prêt de matériel avec succès', () => __awaiter(void 0, void 0, void 0, function* () {
+        const validObjectId = new mongoose_1.default.Types.ObjectId(); // Crée un nouvel ObjectId valide
+        const lendMaterial = new LendMaterials_1.default({
+            material: validObjectId,
+            email: 'user1@example.com',
             date: new Date(),
         });
-        yield material.save();
+        yield lendMaterial.save();
         const response = yield request
-            .post(`/api/lend/${material._id}`)
-            .send({
-            email: 'klecorf@normandiewebschool.fr',
-        })
-            .expect(201);
-        const lendMaterial = response.body;
-        expect(lendMaterial).toHaveProperty('email', 'klecorf@normandiewebschool.fr');
-        expect(lendMaterial).toHaveProperty('material');
-        // Vérifiez que le prêt de matériel a été correctement enregistré dans la base de données
-        const savedLendMaterial = yield LendMaterials_1.default.findById(lendMaterial._id);
-        expect(savedLendMaterial).toBeTruthy();
+            .get(`/api/lend/${lendMaterial._id}`)
+            .expect(200);
+        const returnedLendMaterial = response.body;
+        expect(returnedLendMaterial).toHaveProperty('material', validObjectId.toString());
+        expect(returnedLendMaterial).toHaveProperty('email', 'user1@example.com');
     }));
-    it('devrait renvoyer une erreur 404 si le matériel n\'existe pas', () => __awaiter(void 0, void 0, void 0, function* () {
-        const nonExistentMaterialId = '123456789012345678901235';
+    it('devrait renvoyer une erreur 404 si le prêt de matériel n\'existe pas', () => __awaiter(void 0, void 0, void 0, function* () {
+        const nonExistentLendMaterialId = '123456789012345678901235';
         const response = yield request
-            .post(`/api/lend/${nonExistentMaterialId}`)
-            .send({
-            email: 'klecorf@normandiewebschool.fr',
-        })
+            .get(`/api/lend/${nonExistentLendMaterialId}`)
             .expect(404);
-        expect(response.body).toHaveProperty('error', 'Matériel non trouvé');
+        expect(response.body).toHaveProperty('error', 'Prêt de matériel non trouvé');
+    }));
+    it('devrait renvoyer une erreur 404 en cas d\'échec de récupération du prêt de matériel', () => __awaiter(void 0, void 0, void 0, function* () {
+        // Simuler une erreur en vidant la base de données
+        yield (0, setupBDD_1.clearDatabase)();
+        const response = yield request
+            .get('/api/lend/123456789012345678901235')
+            .expect(404);
+        expect(response.body).toHaveProperty('error', 'Prêt de matériel non trouvé');
     }));
     it('devrait renvoyer une erreur 404 si l\'ID du matériel n\'a pas 24 caractères', () => __awaiter(void 0, void 0, void 0, function* () {
         const invalidMaterialId = '12345678901234567890123'; // ID de 23 caractères
         const response = yield request
-            .post(`/api/lend/${invalidMaterialId}`)
-            .send({
-            email: 'klecorf@normandiewebschool.fr',
-        })
+            .get(`/api/lend/${invalidMaterialId}`)
             .expect(404);
         expect(response.body).toHaveProperty('error', 'ID de matériel non valide');
     }));
