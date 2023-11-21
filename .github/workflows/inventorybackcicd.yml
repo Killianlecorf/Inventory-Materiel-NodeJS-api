@@ -32,7 +32,7 @@ jobs:
       if: success() && github.ref == 'refs/heads/main'
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.SHH_IP }}
+        host: ${{ secrets.SSH_IP }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
