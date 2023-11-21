@@ -37,7 +37,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd docker/inventory-back
-          git pull origin main
-          npm install
-          npm run build
+          sudo git pull origin main
+          sudo npm install
+          sudo npm run build
 
