@@ -1,0 +1,37 @@
+name: CI/CD React with Jest
+
+on:
+  push:
+    branches:
+      - dev 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout du code
+      uses: actions/checkout@v2
+
+    - name: Installation des dépendances
+      run: npm install
+
+    - name: Exécution des tests Jest
+      run: npm run test
+
+    - name: Merge des modifications dans la branche main
+      if: success() && github.ref == 'refs/heads/dev'
+      run: git checkout main && git merge dev && git push origin main
+
+    - name: Déploiement sur le VPS
+      if: success() && github.ref == 'refs/heads/main'
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SHH_IP }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd docker/inventory-back
+          git pull origin main
+          npm install
+          npm run build
