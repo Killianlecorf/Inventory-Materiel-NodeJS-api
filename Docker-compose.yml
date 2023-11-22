@@ -3,8 +3,13 @@ services:
   app:
     build: .
     ports:
-      - "8282:5353"
-    volumes:
-      - .:/app/node-app
-    environment:
-      NODE_ENV: production
+      - '5353:5353'
+    depends_on:
+      - mongo
+    links:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'

@@ -1,6 +1,6 @@
-FROM node:20-alpine
+FROM node:latest
 
-WORKDIR /app/node-app
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
@@ -13,3 +13,4 @@ RUN npm run build
 EXPOSE 5353
 
 CMD ["npm", "run", "start"]
+

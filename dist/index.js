@@ -18,15 +18,15 @@ dotenv_1.default.config();
 const app = (0, express_1.default)();
 exports.app = app;
 const port = process.env.PORT || 5000;
-app.use((0, cors_1.default)({
-    origin: [
-        "http://localhost:5173",
-        "http://localhost:8080",
-        "http://vps-3aa18acd.vps.ovh.net:8080/",
-        "http://vps-3aa18acd.vps.ovh.net/"
-    ],
-    credentials: true
-}));
+// app.use(cors({
+//   origin: [
+//       "http://localhost:5173",
+//       "http://localhost:8080",
+//       "http://vps-3aa18acd.vps.ovh.net:8080/",
+//       "http://vps-3aa18acd.vps.ovh.net/"
+//   ],
+//   credentials: true
+// }));
 app.use(cors_middleware_1.corsMiddleware);
 app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)());
