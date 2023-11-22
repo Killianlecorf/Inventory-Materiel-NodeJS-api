@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev 
+      - main
 
 jobs:
   build:
@@ -31,11 +32,13 @@ jobs:
       if: success() && github.ref == 'refs/heads/main'
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.SHH_IP }}
+        host: ${{ secrets.SSH_IP }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd docker/inventory-back
-          git pull origin main
-          npm install
-          npm run build
+          sudo git pull origin main
+          sudo npm install
+          sudo npm i --save-dev @types/dotenv
+          sudo npm run build
+
