@@ -14,7 +14,7 @@ const port = process.env.PORT || 5000;
 
 app.use(cors({
   origin: [
-    "http://localhost:8080"
+    "http://vps-3aa18acd.vps.ovh.net:8080"
   ],
   credentials: true
 }));
