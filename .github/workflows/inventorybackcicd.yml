@@ -37,8 +37,10 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd docker/inventory-back
-          sudo git pull origin main
+          sudo rm -r inventory-back
+          git clone https://github.com/Killianlecorf/inventory-back
+          cd inventory-back
           sudo npm install
-          sudo npm i --save-dev @types/dotenv
           sudo npm run build
+          sudo docker-compose -f Docker-compose.yml up --build -d
 
