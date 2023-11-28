@@ -23,10 +23,10 @@ jobs:
     - name: Fusion des modifications de dev dans la branche par défaut
       if: success() && github.ref == 'refs/heads/dev'
       run: |
-        git checkout ${{ github.head_ref }}
-        git pull origin ${{ github.head_ref }}
+        git checkout origin/main
+        git pull origin/main
         git merge dev
-        git push origin ${{ github.head_ref }}
+        git push origin/main
 
     - name: Déploiement sur le VPS
       if: success() && github.ref == 'refs/heads/main'
