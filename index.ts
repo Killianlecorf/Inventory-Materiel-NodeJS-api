@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import {corsMiddleware}  from "./src/middleware/cors.middleware";
+// import {corsMiddleware}  from "./src/middleware/cors.middleware";
 import bodyParser from 'body-parser';
 import databaseConnection from "./src/Config/DBconnect";
 import materialsRoute from "./src/Routes/Materials.routes";
@@ -15,7 +15,7 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 
-app.use(corsMiddleware);
+// app.use(corsMiddleware);
 
 app.use(bodyParser.json());
 

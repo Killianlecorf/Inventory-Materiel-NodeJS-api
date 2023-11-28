@@ -14,9 +14,6 @@ jobs:
     - name: Checkout du code
       uses: actions/checkout@v2
 
-    - name: Installation des dépendances
-      run: npm install
-
     - name: Exécution des tests Jest
       run: npm run test
 
