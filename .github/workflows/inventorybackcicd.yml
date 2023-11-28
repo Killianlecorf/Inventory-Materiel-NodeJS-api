@@ -36,7 +36,7 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd docker/inventory-back
+          cd docker
           sudo rm -r inventory-back
           git clone https://github.com/Killianlecorf/inventory-back
           cd inventory-back
