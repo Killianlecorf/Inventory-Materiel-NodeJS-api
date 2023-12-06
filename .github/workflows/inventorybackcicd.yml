@@ -20,14 +20,6 @@ jobs:
     - name: Exécution des tests Jest
       run: npm run test
 
-    # - name: Fusion des modifications de dev dans la branche par défaut
-    #   if: success() && github.ref == 'refs/heads/dev'
-    #   run: |
-    #     git checkout origin/main
-    #     git pull origin origin/main
-    #     git merge dev
-    #     git push origin origin/main
-
     - name: Déploiement sur le VPS
       if: success() && github.ref == 'refs/heads/main'
       uses: appleboy/ssh-action@master
